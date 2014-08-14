@@ -109,7 +109,7 @@ WARNING
         install_binaries
         install_node
         install_bower
-        build_bower
+        build_bowndler
         run_assets_precompile_rake_task
       end
       best_practice_warnings
@@ -665,26 +665,18 @@ https://devcenter.heroku.com/articles/ruby-versions#your-ruby-version-is-x-but-y
   end
 
   # runs bower to install the dependencies
-  def build_bower
-    error_message = <<ERROR
-Can't install JavaScript dependencies
+  def build_bowndler
+    error_message = "Can't install Bower dependencies"
 
-Bower 1.0.0 released at 2013-07-23
-https://github.com/bower/bower/blob/master/CHANGELOG.md
-
-Check these points:
-* Change from component.json to bower.json
-* bower.json requires 'name' option
-ERROR
-
-    log("bower") do
-      topic("Installing JavaScript dependencies using Bower #{bower_version}")
+    log("bowndler") do
+      topic("Installing JavaScript dependencies using Bowndler (bower version: #{bower_version})")
 
       load_bower_cache
 
+      pipe("bowndler bower_configure")
       pipe("./node_modules/bower/bin/bower install --config.storage.packages=vendor/bower/packages --config.storage.registry=vendor/bower/registry --config.tmp=vendor/bower/tmp 2>&1")
       if $?.success?
-        log "bower", :status => "success"
+        log "bowndler", :status => "success"
         puts "Cleaning up the bower tmp."
         FileUtils.rm_rf("vendor/bower/tmp")
         cache.store "vendor/bower"
